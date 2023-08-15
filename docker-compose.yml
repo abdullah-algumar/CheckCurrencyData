@@ -22,9 +22,11 @@ services:
     ports:
       - "8866:8866"
   redis:
+    image: redis:alpine
+    ports:
+      - "7055:6379"
     container_name: redis
-    image: redis:5.0.5
-    hostname: redis
+    restart: unless-stopped
   celery:
     restart: always
     build:
@@ -38,3 +40,9 @@ services:
       - db
       - redis
       - web
+
+  
+
+networks:
+  celery_demo_network:
+    driver: bridge
