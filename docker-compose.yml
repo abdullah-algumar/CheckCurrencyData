@@ -21,3 +21,20 @@ services:
       - db
     ports:
       - "8866:8866"
+  redis:
+    container_name: redis
+    image: redis:5.0.5
+    hostname: redis
+  celery:
+    restart: always
+    build:
+      context: .
+    command: celery -A core worker --loglevel=INFO
+    volumes:
+      - ./home/celery:/app
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+      - web
