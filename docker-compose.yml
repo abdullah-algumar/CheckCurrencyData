@@ -7,8 +7,7 @@ services:
     container_name: django_db
     image: postgres
     volumes:
-      - /home/django_db:/home/Documents:rw
-  
+      - /home/django_db:/var/lib/postgresql/data:rw
   web:
     build: .
     image: django
@@ -16,7 +15,7 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/code/django_drf
+      - /home/django_drf:/code
     depends_on:
       - db
     ports:
@@ -31,18 +30,12 @@ services:
     restart: always
     build:
       context: .
-    command: celery -A core worker --loglevel=INFO
+    command: celery -A core worker --loglevel=INFO & celery -A core beat --loglevel=INFO
     volumes:
-      - ./home/celery:/app
+      - /home/celery:/code
     env_file:
       - .env
     depends_on:
       - db
       - redis
       - web
-
-  
-
-networks:
-  celery_demo_network:
-    driver: bridge

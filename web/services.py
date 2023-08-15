@@ -10,7 +10,7 @@ class CollectCoinService:
 
     def collect_coins_data(self):
         response = requests.get(f"{self.base_url}/economy/allCurrency", headers=self.headers)
-        if response.ok:
+        if response:
             json_response = response.json()
             return json_response
 

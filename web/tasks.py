@@ -2,8 +2,6 @@ from web.serializers import CoinSerializer
 from core.celery import app
 from web.services import CollectCoinService
 
-
-## Change the task to the scheduled tasks
 @app.task
 def fetch_currency_data():
     service = CollectCoinService()
