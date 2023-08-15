@@ -1,0 +1,26 @@
+İstanbul borsası ya da bir kripto borsası gibi bir yerden data çekip bir veritabanına yazacak ve bir endpointten ulaşılabilecek bir yapı kurmanı bekliyoruz.
+
+ Celery kullanarak asenkron servisler kullanmanı,
+
+ Rabbitmq yerine Redis kullanmanı,
+
+ Serializer yapısını mutlaka kurmanı,
+
+Testlerini de unittest ile yazmanı 
+
+Bütün yapıyı Class Based olarak kurmanı,
+
+ Fonksiyonel viewlar kullanmamanı bekliyoruz.
+Kodun pep8 uyumlu olmasına dikkat etmelisin.
+Kodu github'da bir repo oluşturarak tutman gerekiyor.
+Eğer istersen bunu dockerized bir hale getirebilir ve/veya deploy da edebilir ya da OpenApı spesifikasyonlarını falan oluşturabilirsin ama bizi asıl ilgilendiren kod yazma pratiğin.
+Case'i tamamlamasından sonra bir görüşme ayarlayıp bir sunum yapmanı isteyeceğiz.
+
+
+Case ile ilgili sormak istediğin bir şey olursa bana direkt sorabilirsin Toygar'a iletebilirim ya da Toygar Aksoy olarak LinkedIn üzerinen kendisine ulaşabilirsin.
+
+
+curl --request GET \
+  --url 'https://api.collectapi.com/economy/allCurrency' \
+  --header 'authorization: apikey 1EaWYnZdhXA3mpX9xPv2ay:3csfSMofNMLynsn2FTOpL2' \
+  --header 'content-type: application/json'
