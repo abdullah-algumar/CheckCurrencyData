@@ -13,6 +13,7 @@ class Coin(BaseModel):
     time = models.CharField(max_length=50)
     date = models.CharField(max_length=50)
     datetime = models.CharField(max_length=50)
+    calculated = models.IntegerField()
 
 
     def __str__(self):

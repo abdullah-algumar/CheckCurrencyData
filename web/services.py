@@ -1,10 +1,11 @@
+import os
 import requests
 
 class CollectCoinService:
-    base_url = "api.collectapi.com"
+    base_url = os.environ.get('BASE_URL')
     headers = {
         'content-type': "application/json",
-        'authorization': "apikey 1EaWYnZdhXA3mpX9xPv2ay:3csfSMofNMLynsn2FTOpL2"
+        'authorization': os.environ.get('API_KEY')
     }
 
     def collect_coins_data(self):
