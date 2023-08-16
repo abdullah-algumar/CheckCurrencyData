@@ -1,5 +1,4 @@
-import json
-from unittest import mock, TestCase
+from unittest import TestCase
 from unittest.mock import patch
 from web.services import CollectCoinService
 from web.serializers import CoinSerializer
@@ -78,7 +77,7 @@ class CollectCoinServiceTest(TestCase):
 
         self.assertEqual(result, mock_response['result'])
 
-    @mock.patch('requests.get')
+    @patch('web.services.requests.get')
     def test_collect_coins_data_failure(self, mock_get):
         mock_response = MockResponse(json_data=None, status_code=404)
         mock_get.return_value = mock_response
