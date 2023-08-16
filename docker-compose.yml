@@ -15,7 +15,7 @@ services:
     env_file:
       - .env
     volumes:
-      - /home/django_drf:/code
+      - /home/django_drf:/home/abdullah
     depends_on:
       - db
     ports:
@@ -30,12 +30,26 @@ services:
     restart: always
     build:
       context: .
-    command: celery -A core worker --loglevel=INFO & celery -A core beat --loglevel=INFO
+    command: celery -A core worker --loglevel=INFO
     volumes:
-      - /home/celery:/code
+      - /home/celery:/home/abdullah
     env_file:
       - .env
     depends_on:
       - db
       - redis
       - web
+  celery-beat:
+    restart: always
+    build:
+      context: .
+    command: celery -A core beat --loglevel=INFO
+    volumes:
+      - /home/beat:/home/abdullah
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+      - web
+      - celery

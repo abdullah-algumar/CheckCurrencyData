@@ -1,4 +1,5 @@
 from rest_framework.generics import ListAPIView
+from web.services import CollectCoinService
 from web.models import Coin
 from web.serializers import CoinSerializer
 
