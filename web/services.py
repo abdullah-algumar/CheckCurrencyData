@@ -15,7 +15,6 @@ class CollectCoinService:
         if response.ok:
             json_response = response.json()
             data = json_response['result']
-            print('This is Services.py file json_response : ', json_response['result'])
             serializer = CoinSerializer(data=data, many=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()

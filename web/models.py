@@ -17,7 +17,7 @@ class Coin(BaseModel):
 
 
     def __str__(self):
-        return f'{self.name}'
+        return self.name
 
     class Meta:
         db_table = 'coins'

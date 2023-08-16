@@ -1,6 +1,5 @@
 import json
 from unittest import mock, TestCase
-import unittest
 from web.services import CollectCoinService
 from web.serializers import CoinSerializer
 
@@ -34,15 +33,13 @@ class CoinSerializerTestCase(TestCase):
         self.assertEqual(serializer.validated_data.get('date'), "2023-08-15")
         self.assertEqual(serializer.validated_data.get('datetime'), "2023-08-15 10:00:00")
         self.assertEqual(serializer.validated_data.get('calculated'), 1)
-        
-
 
 class MockResponse:
     def __init__(self, json_data, status_code):
         super().__init__()
         self.json_data = json_data
         self.status_code = status_code
-        self._content = json.dumps(json_data)  # _content'ı güncelleyerek içeriği ayarlayın
+        self._content = json.dumps(json_data)
         self._content_consumed = True
         self.ok = 200 <= status_code < 300 
 
@@ -54,8 +51,6 @@ class CollectCoinServiceTest(TestCase):
 
     @mock.patch('web.services.CollectCoinService.collect_coins_data',return_value=mock.Mock(
             success=True,
-            # _raw_request='raw_request',
-            # _raw_response='raw_response',
             response={},ok=True))
     def test_collect_coins_data_success(self, mock_get):
         mock_response_data = {
@@ -91,10 +86,6 @@ class CollectCoinServiceTest(TestCase):
             self.assertEqual(expected_coin['date'], actual_coin['date'])
             self.assertEqual(expected_coin['datetime'], actual_coin['datetime'])
             self.assertEqual(expected_coin['calculated'], actual_coin['calculated'])
-        # for expected_coin, actual_coin in zip(mock_response_data, coins_data):
-        #     self.assertDictEqual(expected_coin, actual_coin)
-
-
 
     @mock.patch('requests.get')
     def test_collect_coins_data_failure(self, mock_get):
@@ -103,8 +94,5 @@ class CollectCoinServiceTest(TestCase):
 
         coins_data = self.collect_service.collect_coins_data()
         self.assertIsNone(coins_data)
-
-if __name__ == '__main__':
-    unittest.main()
 
 
