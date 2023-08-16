@@ -4,7 +4,6 @@ from unittest.mock import patch
 from web.services import CollectCoinService
 from web.serializers import CoinSerializer
 
-
 class CoinSerializerTestCase(TestCase):
     def test_get_serializer_action(self):
         data = {
@@ -39,10 +38,6 @@ class CoinSerializerTestCase(TestCase):
         datetime_obj = serializer.validated_data.get('datetime')
         datetime_str = datetime_obj.strftime('%Y-%m-%d %H:%M:%S') if datetime_obj else None
         self.assertEqual(datetime_str, "2023-08-15 10:00:00")
-
-
-
-        # self.assertEqual(serializer.validated_data.get('datetime'), "2023-08-15 10:00:00")
         self.assertEqual(serializer.validated_data.get('calculated'), 1)
 
 class MockResponse:
