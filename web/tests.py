@@ -1,12 +1,13 @@
 import json
 from unittest import mock, TestCase
+from unittest.mock import patch
 from web.services import CollectCoinService
 from web.serializers import CoinSerializer
 
 
 class CoinSerializerTestCase(TestCase):
     def test_get_serializer_action(self):
-        data = [{
+        data = {
             "name": "Dolar",
             "code": "BTC",
             "buying": 50000,
@@ -18,7 +19,7 @@ class CoinSerializerTestCase(TestCase):
             "date": "2023-08-15",
             "datetime": "2023-08-15 10:00:00",
             "calculated": 1,
-        }]
+        }
 
         serializer = CoinSerializer(data=data)
         self.assertTrue(serializer.is_valid())
@@ -29,9 +30,19 @@ class CoinSerializerTestCase(TestCase):
         self.assertEqual(serializer.validated_data.get('selling'), 51000)
         self.assertEqual(serializer.validated_data.get('sellingstr'), "51,000")
         self.assertEqual(serializer.validated_data.get('rate'), 1000)
-        self.assertEqual(serializer.validated_data.get('time'), "10:00")
-        self.assertEqual(serializer.validated_data.get('date'), "2023-08-15")
-        self.assertEqual(serializer.validated_data.get('datetime'), "2023-08-15 10:00:00")
+        time_obj = serializer.validated_data.get('time')
+        time_str = time_obj.strftime('%H:%M') if time_obj else None
+        self.assertEqual(time_str, "10:00")
+        date_obj = serializer.validated_data.get('date')
+        date_str = date_obj.strftime('%Y-%m-%d') if date_obj else None
+        self.assertEqual(date_str, "2023-08-15")
+        datetime_obj = serializer.validated_data.get('datetime')
+        datetime_str = datetime_obj.strftime('%Y-%m-%d %H:%M:%S') if datetime_obj else None
+        self.assertEqual(datetime_str, "2023-08-15 10:00:00")
+
+
+
+        # self.assertEqual(serializer.validated_data.get('datetime'), "2023-08-15 10:00:00")
         self.assertEqual(serializer.validated_data.get('calculated'), 1)
 
 class MockResponse:
@@ -48,12 +59,11 @@ class MockResponse:
 
 class CollectCoinServiceTest(TestCase):
     collect_service = CollectCoinService()
-
-    @mock.patch('web.services.CollectCoinService.collect_coins_data',return_value=mock.Mock(
-            success=True,
-            response={},ok=True))
-    def test_collect_coins_data_success(self, mock_get):
-        mock_response_data = {
+    
+    @patch('web.services.requests.get')
+    def test_collect_coins_data(self, mock_get):
+        mock_response = {
+            'result': [{
             'name': 'Amerikan Doları',
             'code': 'USD',
             'buying': 27.056,
@@ -65,27 +75,15 @@ class CollectCoinServiceTest(TestCase):
             'date': '2023-08-15',
             'datetime': '2023-08-15T20:26:00.000Z',
             'calculated': 0
-            }
-        
+            }]
+        }
+        mock_get.return_value.ok = True
+        mock_get.return_value.json.return_value = mock_response
 
-        mock_get.return_value = mock_response_data
+        service = CollectCoinService()
+        result = service.collect_coins_data()
 
-        coins_data = self.collect_service.collect_coins_data()
-        self.assertIsNotNone(coins_data)
-        self.assertEqual(len(coins_data), len(mock_response_data))
-
-        for expected_coin, actual_coin in zip(mock_response_data, coins_data):
-            self.assertEqual(expected_coin['name'], actual_coin['name'])
-            self.assertEqual(expected_coin['code'], actual_coin['code'])
-            self.assertEqual(expected_coin['buying'], actual_coin['buying'])
-            self.assertEqual(expected_coin['buying_str'], actual_coin['buying_str'])
-            self.assertEqual(expected_coin['selling'], actual_coin['selling'])
-            self.assertEqual(expected_coin['selling_str'], actual_coin['selling_str'])
-            self.assertEqual(expected_coin['rate'], actual_coin['rate'])
-            self.assertEqual(expected_coin['time'], actual_coin['time'])
-            self.assertEqual(expected_coin['date'], actual_coin['date'])
-            self.assertEqual(expected_coin['datetime'], actual_coin['datetime'])
-            self.assertEqual(expected_coin['calculated'], actual_coin['calculated'])
+        self.assertEqual(result, mock_response['result'])
 
     @mock.patch('requests.get')
     def test_collect_coins_data_failure(self, mock_get):
@@ -94,5 +92,3 @@ class CollectCoinServiceTest(TestCase):
 
         coins_data = self.collect_service.collect_coins_data()
         self.assertIsNone(coins_data)
-
-
