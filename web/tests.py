@@ -45,8 +45,6 @@ class MockResponse:
         super().__init__()
         self.json_data = json_data
         self.status_code = status_code
-        self._content = json.dumps(json_data)
-        self._content_consumed = True
         self.ok = 200 <= status_code < 300 
 
     def json(self):
