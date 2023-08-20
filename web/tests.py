@@ -2,6 +2,9 @@ from unittest import TestCase
 from unittest.mock import patch
 from web.services import CollectCoinService
 from web.serializers import CoinSerializer
+import datetime
+import zoneinfo
+
 
 class CoinSerializerTestCase(TestCase):
     def test_get_serializer_action(self):
@@ -28,16 +31,11 @@ class CoinSerializerTestCase(TestCase):
         self.assertEqual(serializer.validated_data.get('selling'), 51000)
         self.assertEqual(serializer.validated_data.get('sellingstr'), "51,000")
         self.assertEqual(serializer.validated_data.get('rate'), 1000)
-        time_obj = serializer.validated_data.get('time')
-        time_str = time_obj.strftime('%H:%M') if time_obj else None
-        self.assertEqual(time_str, "10:00")
-        date_obj = serializer.validated_data.get('date')
-        date_str = date_obj.strftime('%Y-%m-%d') if date_obj else None
-        self.assertEqual(date_str, "2023-08-15")
-        datetime_obj = serializer.validated_data.get('datetime')
-        datetime_str = datetime_obj.strftime('%Y-%m-%d %H:%M:%S') if datetime_obj else None
-        self.assertEqual(datetime_str, "2023-08-15 10:00:00")
+        self.assertEqual(serializer.validated_data.get('time'), datetime.time(10, 0))
+        self.assertEqual(serializer.validated_data.get('date'), datetime.date(2023, 8, 15))
+        self.assertEqual(serializer.validated_data.get('datetime'), datetime.datetime(2023, 8, 15, 10, 0, tzinfo=zoneinfo.ZoneInfo(key='UTC')))
         self.assertEqual(serializer.validated_data.get('calculated'), 1)
+
 
 class MockResponse:
     def __init__(self, json_data, status_code):
@@ -79,6 +77,7 @@ class CollectCoinServiceTest(TestCase):
 
     @patch('web.services.requests.get')
     def test_collect_coins_data_failure(self, mock_get):
+        
         mock_response = MockResponse(json_data=None, status_code=404)
         mock_get.return_value = mock_response
 
