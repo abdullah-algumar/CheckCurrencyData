@@ -1,4 +1,4 @@
-# Django DRF Project
+# Django Rest Framework Project
 
 ### this project to check the currencies data from https://api.collectapi.com using django rest framework.
 
